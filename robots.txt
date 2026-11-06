@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://afitness7.github.io/AFITNESS/sitemap.xml
