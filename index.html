@@ -108,5 +108,50 @@ renderWeight();
 $('saveWeight').addEventListener('click',()=>{let kg=+$('weightLog').value;if(!kg||kg<20||kg>300){toast('Please enter a valid weight.');return}weights.push({kg:kg.toFixed(1),date:new Date().toLocaleDateString()});localStorage.setItem('af_weights',JSON.stringify(weights));$('weightLog').value='';renderWeight();toast('Weight entry saved on this device.')});
 let hindi=false;
 $('langBtn').addEventListener('click',()=>{hindi=!hindi;document.documentElement.lang=hindi?'hi':'en';$('langBtn').textContent=hindi?'English':'हिन्दी';document.querySelectorAll('[data-en][data-hi]').forEach(el=>{el.innerHTML=hindi?el.dataset.hi:el.dataset.en})});
+
+// A FITNESS email login/signup using Supabase Auth.
+const SUPABASE_URL = "https://qsnrhtqsiafswdonkvcq.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_RHJR4-HmQhkDhAH5OSyu5g_aZXTSj_-";
+const authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const authOverlay = $("authOverlay");
+const authMessage = $("authMessage");
+const authUser = $("authUser");
+function showAuthMessage(message) { authMessage.textContent = message || ""; }
+function openAuth() { authOverlay.classList.add("show"); showAuthMessage(""); }
+function closeAuth() { authOverlay.classList.remove("show"); }
+$("authOpenBtn").addEventListener("click", openAuth);
+$("authCloseBtn").addEventListener("click", closeAuth);
+authOverlay.addEventListener("click", (event) => { if (event.target === authOverlay) closeAuth(); });
+$("authSignupBtn").addEventListener("click", async () => {
+  const email = $("authEmail").value.trim();
+  const password = $("authPassword").value;
+  if (!email || password.length < 6) { showAuthMessage("Valid email aur kam se kam 6-character password daalo."); return; }
+  showAuthMessage("Account ban raha hai...");
+  const { error } = await authClient.auth.signUp({ email, password });
+  showAuthMessage(error ? error.message : "Signup request successful. Email confirmation aa sakta hai—Inbox check karo.");
+});
+$("authLoginBtn").addEventListener("click", async () => {
+  const email = $("authEmail").value.trim();
+  const password = $("authPassword").value;
+  if (!email || !password) { showAuthMessage("Email aur password daalo."); return; }
+  showAuthMessage("Login ho raha hai...");
+  const { error } = await authClient.auth.signInWithPassword({ email, password });
+  showAuthMessage(error ? error.message : "Login successful!");
+});
+$("authLogoutBtn").addEventListener("click", async () => {
+  const { error } = await authClient.auth.signOut();
+  showAuthMessage(error ? error.message : "Logout successful.");
+});
+async function refreshAuthUI() {
+  const { data } = await authClient.auth.getSession();
+  const user = data.session?.user;
+  authUser.style.display = user ? "block" : "none";
+  authUser.textContent = user ? "Logged in: " + user.email : "";
+  $("authLogoutBtn").style.display = user ? "inline-flex" : "none";
+  $("authOpenBtn").textContent = user ? "My Account" : "Login / Signup";
+}
+authClient.auth.onAuthStateChange(() => refreshAuthUI());
+refreshAuthUI();
+
 </script>
 </body></html>
