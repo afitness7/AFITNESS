@@ -149,9 +149,9 @@ $('saveWorkout').addEventListener('click',async()=>{
   const sets=Number($('workoutSets').value);
   const reps=Number($('workoutReps').value);
   const duration=Number($('workoutDuration').value);
-  if(!name){toast('Exercise ya workout ka naam daalo.');return}
-  if(!Number.isInteger(sets)||sets<1||sets>100||!Number.isInteger(reps)||reps<1||reps>1000){toast('Valid sets aur reps daalo.');return}
-  if($('workoutDuration').value && (!Number.isInteger(duration)||duration<1||duration>1440)){toast('Duration 1 se 1440 minutes ke beech daalo.');return}
+  if(!name){toast('Please select a workout name.');return}
+  if(!Number.isInteger(sets)||sets<1||sets>100||!Number.isInteger(reps)||reps<1||reps>1000){toast('Please select valid sets and reps.');return}
+  if($('workoutDuration').value && (!Number.isInteger(duration)||duration<1||duration>1440)){toast('Please select a duration between 1 and 1440 minutes.');return}
   const entry={workout_name:name,category,sets,reps,duration_minutes:duration||null,completed_at:new Date().toISOString()};
   workoutEntries.unshift(entry);
   localStorage.setItem('af_workouts',JSON.stringify(workoutEntries));
@@ -160,9 +160,9 @@ $('saveWorkout').addEventListener('click',async()=>{
   const user=await currentUser();
   if(user){
     const {error}=await authClient.from('workout_logs').insert({user_id:user.id,workout_name:name,category,sets,reps,duration_minutes:duration||null});
-    if(error){console.error('Workout cloud sync:',error.message);toast('Workout device par save hua; cloud sync error.');}
-    else toast('Workout account mein save ho gaya.');
-  }else toast('Workout device par save hua. Cloud sync ke liye login karo.');
+    if(error){console.error('Workout cloud sync:',error.message);toast('Workout saved on this device, but cloud sync failed.');}
+    else toast('Workout saved successfully to your account.');
+  }else toast('Workout saved on this device. Log in to sync across devices.');
 });
 async function loadCloudWorkouts(){
   const user=await currentUser();if(!user)return;
@@ -191,21 +191,21 @@ $("authSignupBtn").addEventListener("click", async () => {
   const fullName = $("authFullName").value.trim();
   const email = $("authEmail").value.trim();
   const password = $("authPassword").value;
-  if (!fullName) { showAuthMessage("Apna full name daalo."); return; }
-  if (!email || password.length < 6) { showAuthMessage("Valid email aur kam se kam 6-character password daalo."); return; }
-  showAuthMessage("Account ban raha hai...");
+  if (!fullName) { showAuthMessage("Please enter your full name."); return; }
+  if (!email || password.length < 6) { showAuthMessage("Please enter a valid email and a password with at least 6 characters."); return; }
+  showAuthMessage("Creating your account...");
   const { error } = await authClient.auth.signUp({
     email,
     password,
     options: { data: { full_name: fullName } }
   });
-  showAuthMessage(error ? error.message : "Signup request successful. Email confirmation aa sakta hai—Inbox check karo.");
+  showAuthMessage(error ? error.message : "Sign-up request successful. You may need to confirm your email. Please check your inbox.");
 });
 $("authLoginBtn").addEventListener("click", async () => {
   const email = $("authEmail").value.trim();
   const password = $("authPassword").value;
-  if (!email || !password) { showAuthMessage("Email aur password daalo."); return; }
-  showAuthMessage("Login ho raha hai...");
+  if (!email || !password) { showAuthMessage("Please enter your email and password."); return; }
+  showAuthMessage("Logging in...");
   const { error } = await authClient.auth.signInWithPassword({ email, password });
   showAuthMessage(error ? error.message : "Login successful!");
 });
