@@ -101,12 +101,16 @@ $('calBtn').addEventListener('click',()=>{let age=+$('age').value,h=+$('calHeigh
 const today=new Date().toISOString().slice(0,10);let water=Number(localStorage.getItem('af_water_'+today)||0);
 function renderWater(){$('waterCount').textContent=`${water} / 2000 ml`;$('waterBar').style.width=Math.min(100,water/2000*100)+'%'}
 renderWater();
-$('waterAdd').addEventListener('click',()=>{water+=250;localStorage.setItem('af_water_'+today,water);renderWater();toast('Water entry saved on this device.')});
-$('waterReset').addEventListener('click',()=>{water=0;localStorage.setItem('af_water_'+today,water);renderWater();toast('Today’s water tracker reset.')});
+async function currentUser(){const {data}=await authClient.auth.getUser();return data?.user||null}
+async function saveWaterCloud(){const user=await currentUser();if(!user)return false;const {error}=await authClient.from('water_logs').upsert({user_id:user.id,log_date:today,amount_ml:water},{onConflict:'user_id,log_date'});if(error){console.error('Water sync:',error.message);return false}return true}
+$('waterAdd').addEventListener('click',async()=>{water+=250;localStorage.setItem('af_water_'+today,water);renderWater();const cloud=await saveWaterCloud();toast(cloud?'Water saved to your account.':'Water saved on this device. Log in to sync across devices.')});
+$('waterReset').addEventListener('click',async()=>{water=0;localStorage.setItem('af_water_'+today,water);renderWater();const cloud=await saveWaterCloud();toast(cloud?'Today’s water tracker reset.':'Today’s water tracker reset on this device.')});
 let weights=JSON.parse(localStorage.getItem('af_weights')||'[]');
 function renderWeight(){if(weights.length){let last=weights[weights.length-1];$('weightResult').textContent=`Latest: ${last.kg} kg · ${last.date} · ${weights.length} entr${weights.length===1?'y':'ies'}`}else $('weightResult').textContent='No weight entry yet.'}
 renderWeight();
-$('saveWeight').addEventListener('click',()=>{let kg=+$('weightLog').value;if(!kg||kg<20||kg>300){toast('Please enter a valid weight.');return}weights.push({kg:kg.toFixed(1),date:new Date().toLocaleDateString()});localStorage.setItem('af_weights',JSON.stringify(weights));$('weightLog').value='';renderWeight();toast('Weight entry saved on this device.')});
+$('saveWeight').addEventListener('click',async()=>{let kg=+$('weightLog').value;if(!kg||kg<20||kg>300){toast('Please enter a valid weight.');return}const entry={kg:kg.toFixed(1),date:new Date().toISOString().slice(0,10)};weights.push(entry);localStorage.setItem('af_weights',JSON.stringify(weights));$('weightLog').value='';renderWeight();const user=await currentUser();if(user){const {error}=await authClient.from('weight_logs').insert({user_id:user.id,weight_kg:Number(entry.kg),logged_on:entry.date});toast(error?'Saved on this device; cloud sync needs setup.':'Weight saved to your account.')}else toast('Weight saved on this device. Log in to sync across devices.')});
+async function loadCloudProgress(){const user=await currentUser();if(!user)return;const {data:wData,error:wError}=await authClient.from('water_logs').select('amount_ml').eq('user_id',user.id).eq('log_date',today).maybeSingle();if(!wError&&wData){water=Number(wData.amount_ml)||0;localStorage.setItem('af_water_'+today,water);renderWater()}const {data:kgData,error:kgError}=await authClient.from('weight_logs').select('weight_kg,logged_on').eq('user_id',user.id).order('logged_on',{ascending:false}).limit(1);if(!kgError&&kgData?.length){const last=kgData[0];$('weightResult').textContent=`Latest: ${Number(last.weight_kg).toFixed(1)} kg · ${last.logged_on} · saved to your account`}}
+
 let hindi=false;
 $('langBtn').addEventListener('click',()=>{hindi=!hindi;document.documentElement.lang=hindi?'hi':'en';$('langBtn').textContent=hindi?'English':'हिन्दी';document.querySelectorAll('[data-en][data-hi]').forEach(el=>{el.innerHTML=hindi?el.dataset.hi:el.dataset.en})});
 
@@ -157,8 +161,9 @@ async function refreshAuthUI() {
   $("authLogoutBtn").style.display = user ? "inline-flex" : "none";
   $("authOpenBtn").textContent = user ? "My Account" : "Login / Signup";
 }
-authClient.auth.onAuthStateChange(() => refreshAuthUI());
+authClient.auth.onAuthStateChange(() => { refreshAuthUI(); setTimeout(loadCloudProgress, 0); });
 refreshAuthUI();
+loadCloudProgress();
 
 </script>
 </body></html>
