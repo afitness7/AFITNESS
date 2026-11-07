@@ -63,7 +63,23 @@
 <div class="split">
 <div class="calculator"><h3>💧 Water tracker</h3><p>Daily goal: 2,000 ml (adjustable habit target).</p><div class="tracker-row"><button class="btn primary small" id="waterAdd">+ 250 ml</button><button class="btn secondary small" id="waterReset">Reset today</button><strong id="waterCount">0 / 2000 ml</strong></div><div class="progressbar"><span id="waterBar"></span></div><div class="notice">This is a general tracking target, not a medical recommendation.</div></div>
 <div class="calculator"><h3>⚖️ Weight log</h3><p>Record your weight and see your latest entry.</p><div class="tracker-row"><input id="weightLog" type="number" min="20" max="300" step=".1" placeholder="Weight in kg" class="field input"><button class="btn primary small" id="saveWeight">Save weight</button></div><div class="result" id="weightResult">No weight entry yet.</div></div>
-</div></div></section>
+</div>
+<div class="calculator" style="margin-top:20px">
+<h3>🏋️ Workout tracker</h3>
+<p>Record completed workouts and keep your training history with your account.</p>
+<div class="formgrid">
+<div class="field"><label for="workoutName">Workout name</label><input id="workoutName" type="text" maxlength="80" placeholder="e.g. Full body workout"></div>
+<div class="field"><label for="workoutCategory">Category</label><select id="workoutCategory"><option value="Strength">Strength</option><option value="Cardio">Cardio</option><option value="Home workout">Home workout</option><option value="Gym workout">Gym workout</option><option value="Yoga">Yoga</option><option value="Other">Other</option></select></div>
+<div class="field"><label for="workoutSets">Sets</label><input id="workoutSets" type="number" min="1" max="100" placeholder="e.g. 3"></div>
+<div class="field"><label for="workoutReps">Reps per set</label><input id="workoutReps" type="number" min="1" max="1000" placeholder="e.g. 12"></div>
+<div class="field"><label for="workoutDuration">Duration (minutes)</label><input id="workoutDuration" type="number" min="1" max="1440" placeholder="e.g. 45"></div>
+</div>
+<button class="btn primary" id="saveWorkout" style="margin-top:14px">Save completed workout</button>
+<div class="result" id="workoutMessage">Your workout history will appear here.</div>
+<div id="workoutHistory" style="margin-top:12px;display:grid;gap:9px"></div>
+<p class="notice">Log in to sync workout history across devices. Without login, entries stay in this browser.</p>
+</div>
+</div></section>
 <section class="section" id="premium"><div class="container"><div class="premium"><div><div class="kicker">GO BEYOND THE BASICS</div><h2 data-en="Make your next level personal." data-hi="अपनी फिटनेस को पर्सनल बनाएं।">Make your next level personal.</h2><p class="sub" data-en="Premium is planned to include personalised workout and diet plans, 30/60/90-day programmes, advanced analytics and expert guidance." data-hi="प्रीमियम में पर्सनल वर्कआउट और डाइट प्लान, 30/60/90 दिन के प्रोग्राम, एडवांस एनालिटिक्स और एक्सपर्ट गाइडेंस शामिल करने की योजना है।">Premium is planned to include personalised workout and diet plans, 30/60/90-day programmes, advanced analytics and expert guidance.</p><ul><li>Personalised workout and diet plans</li><li>Advanced progress and macro tracking</li><li>Structured 30, 60 and 90-day programmes</li></ul><span class="tag">COMING SOON</span></div><div><div class="price">Premium</div><p class="notice">Membership and payments are not enabled in this starter version.</p><a href="#home" class="btn primary">Explore A FITNESS</a></div></div></div></section>
 <section class="section"><div class="container"><div class="quote"><div class="kicker">A FITNESS MINDSET</div><blockquote>“Your Fitness. Your Journey. Your Transformation.”</blockquote><p>Consistency over perfection. One day at a time.</p></div></div></section>
 </main>
@@ -110,6 +126,50 @@ function renderWeight(){if(weights.length){let last=weights[weights.length-1];$(
 renderWeight();
 $('saveWeight').addEventListener('click',async()=>{let kg=+$('weightLog').value;if(!kg||kg<20||kg>300){toast('Please enter a valid weight.');return}const entry={kg:kg.toFixed(1),date:new Date().toISOString().slice(0,10)};weights.push(entry);localStorage.setItem('af_weights',JSON.stringify(weights));$('weightLog').value='';renderWeight();const user=await currentUser();if(user){const {error}=await authClient.from('weight_logs').insert({user_id:user.id,weight_kg:Number(entry.kg),logged_on:entry.date});toast(error?'Saved on this device; cloud sync needs setup.':'Weight saved to your account.')}else toast('Weight saved on this device. Log in to sync across devices.')});
 async function loadCloudProgress(){const user=await currentUser();if(!user)return;const {data:wData,error:wError}=await authClient.from('water_logs').select('amount_ml').eq('user_id',user.id).eq('log_date',today).maybeSingle();if(!wError&&wData){water=Number(wData.amount_ml)||0;localStorage.setItem('af_water_'+today,water);renderWater()}const {data:kgData,error:kgError}=await authClient.from('weight_logs').select('weight_kg,logged_on').eq('user_id',user.id).order('logged_on',{ascending:false}).limit(1);if(!kgError&&kgData?.length){const last=kgData[0];$('weightResult').textContent=`Latest: ${Number(last.weight_kg).toFixed(1)} kg · ${last.logged_on} · saved to your account`}}
+
+// Workout tracking: local backup plus Supabase workout_logs cloud sync.
+let workoutEntries=JSON.parse(localStorage.getItem('af_workouts')||'[]');
+function renderWorkoutHistory(){
+  const box=$('workoutHistory');
+  if(!workoutEntries.length){box.innerHTML='<div class="notice">No workouts recorded yet.</div>';return}
+  box.innerHTML=workoutEntries.slice(0,12).map(item=>{
+    const name=String(item.workout_name||item.name||'Workout').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    const category=String(item.category||'Workout').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    const setsReps=item.sets&&item.reps?` · ${item.sets} sets × ${item.reps} reps`:'';
+    const mins=item.duration_minutes?` · ${item.duration_minutes} min`:'';
+    const rawDate=item.completed_at||item.date||new Date().toISOString();
+    const date=new Date(rawDate).toLocaleDateString();
+    return `<div class="card" style="padding:13px 16px"><strong>${name}</strong><div class="notice">${category}${setsReps}${mins} · ${date}</div></div>`;
+  }).join('');
+}
+renderWorkoutHistory();
+$('saveWorkout').addEventListener('click',async()=>{
+  const name=$('workoutName').value.trim();
+  const category=$('workoutCategory').value;
+  const sets=Number($('workoutSets').value);
+  const reps=Number($('workoutReps').value);
+  const duration=Number($('workoutDuration').value);
+  if(!name){toast('Exercise ya workout ka naam daalo.');return}
+  if(!Number.isInteger(sets)||sets<1||sets>100||!Number.isInteger(reps)||reps<1||reps>1000){toast('Valid sets aur reps daalo.');return}
+  if($('workoutDuration').value && (!Number.isInteger(duration)||duration<1||duration>1440)){toast('Duration 1 se 1440 minutes ke beech daalo.');return}
+  const entry={workout_name:name,category,sets,reps,duration_minutes:duration||null,completed_at:new Date().toISOString()};
+  workoutEntries.unshift(entry);
+  localStorage.setItem('af_workouts',JSON.stringify(workoutEntries));
+  renderWorkoutHistory();
+  $('workoutName').value='';$('workoutSets').value='';$('workoutReps').value='';$('workoutDuration').value='';
+  const user=await currentUser();
+  if(user){
+    const {error}=await authClient.from('workout_logs').insert({user_id:user.id,workout_name:name,category,sets,reps,duration_minutes:duration||null});
+    if(error){console.error('Workout cloud sync:',error.message);toast('Workout device par save hua; cloud sync error.');}
+    else toast('Workout account mein save ho gaya.');
+  }else toast('Workout device par save hua. Cloud sync ke liye login karo.');
+});
+async function loadCloudWorkouts(){
+  const user=await currentUser();if(!user)return;
+  const {data,error}=await authClient.from('workout_logs').select('workout_name,category,sets,reps,duration_minutes,completed_at').eq('user_id',user.id).order('completed_at',{ascending:false}).limit(30);
+  if(error){console.error('Workout history load:',error.message);return;}
+  if(data){workoutEntries=data;localStorage.setItem('af_workouts',JSON.stringify(workoutEntries));renderWorkoutHistory();}
+}
 
 let hindi=false;
 $('langBtn').addEventListener('click',()=>{hindi=!hindi;document.documentElement.lang=hindi?'hi':'en';$('langBtn').textContent=hindi?'English':'हिन्दी';document.querySelectorAll('[data-en][data-hi]').forEach(el=>{el.innerHTML=hindi?el.dataset.hi:el.dataset.en})});
@@ -161,9 +221,10 @@ async function refreshAuthUI() {
   $("authLogoutBtn").style.display = user ? "inline-flex" : "none";
   $("authOpenBtn").textContent = user ? "My Account" : "Login / Signup";
 }
-authClient.auth.onAuthStateChange(() => { refreshAuthUI(); setTimeout(loadCloudProgress, 0); });
+authClient.auth.onAuthStateChange(() => { refreshAuthUI(); setTimeout(()=>{loadCloudProgress();loadCloudWorkouts();}, 0); });
 refreshAuthUI();
 loadCloudProgress();
+loadCloudWorkouts();
 
 </script>
 </body></html>
