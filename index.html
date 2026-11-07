@@ -75,6 +75,7 @@
     <button class="auth-close" id="authCloseBtn" aria-label="Close">×</button>
     <h2 id="authTitle">Welcome to A FITNESS</h2>
     <p>Login or create your free account using email.</p>
+    <input id="authFullName" type="text" placeholder="Full name" autocomplete="name">
     <input id="authEmail" type="email" placeholder="Email address" autocomplete="email">
     <input id="authPassword" type="password" placeholder="Password (minimum 6 characters)" autocomplete="current-password">
     <div class="auth-actions">
@@ -123,11 +124,17 @@ $("authOpenBtn").addEventListener("click", openAuth);
 $("authCloseBtn").addEventListener("click", closeAuth);
 authOverlay.addEventListener("click", (event) => { if (event.target === authOverlay) closeAuth(); });
 $("authSignupBtn").addEventListener("click", async () => {
+  const fullName = $("authFullName").value.trim();
   const email = $("authEmail").value.trim();
   const password = $("authPassword").value;
+  if (!fullName) { showAuthMessage("Apna full name daalo."); return; }
   if (!email || password.length < 6) { showAuthMessage("Valid email aur kam se kam 6-character password daalo."); return; }
   showAuthMessage("Account ban raha hai...");
-  const { error } = await authClient.auth.signUp({ email, password });
+  const { error } = await authClient.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: fullName } }
+  });
   showAuthMessage(error ? error.message : "Signup request successful. Email confirmation aa sakta hai—Inbox check karo.");
 });
 $("authLoginBtn").addEventListener("click", async () => {
