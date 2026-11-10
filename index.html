@@ -137,22 +137,25 @@ input,select{min-height:44px}
 
 <script>
 const $=id=>document.getElementById(id);
+// Safe local storage helpers prevent one damaged browser value from breaking the whole site.
+function readJSON(key,fallback){try{const value=JSON.parse(localStorage.getItem(key));return value??fallback}catch(error){console.warn('Storage read:',key,error);return fallback}}
+function localDateKey(date=new Date()){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`}
 $('year').textContent=new Date().getFullYear();
 $('menuBtn').addEventListener('click',()=>$('navlinks').classList.toggle('open'));
 document.querySelectorAll('.navlinks a').forEach(a=>a.addEventListener('click',()=>$('navlinks').classList.remove('open')));
 function toast(msg){$('toast').textContent=msg;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2200)}
 $('bmiBtn').addEventListener('click',()=>{let h=+$('height').value/100,w=+$('weight').value;if(!h||!w||h<.8||h>2.5||w<20||w>300){$('bmiResult').textContent='Please enter a valid height and weight.';return}let bmi=w/(h*h),cat=bmi<18.5?'Below usual adult range':bmi<25?'Usual adult range':bmi<30?'Above usual adult range':'High adult range';$('bmiResult').textContent=`BMI: ${bmi.toFixed(1)} · ${cat}. Screening estimate only.`});
 $('calBtn').addEventListener('click',()=>{let age=+$('age').value,h=+$('calHeight').value,w=+$('calWeight').value,sex=$('sex').value,act=+$('activity').value;if(!age||!h||!w||age<15||age>100||h<100||h>230||w<30||w>250){$('calResult').textContent='Please enter valid age, height and weight.';return}let bmr=10*w+6.25*h-5*age+(sex==='male'?5:-161),cal=Math.round(bmr*act);$('calResult').textContent=`BMR: ${Math.round(bmr)} kcal/day · Estimated maintenance: ${cal} kcal/day`});
-const today=new Date().toISOString().slice(0,10);let water=Number(localStorage.getItem('af_water_'+today)||0);
+const today=localDateKey();let water=Number(localStorage.getItem('af_water_'+today)||0);
 let waterGoal=Number(localStorage.getItem('af_water_goal')||2000);
 function renderWater(){waterGoal=Math.min(6000,Math.max(500,waterGoal||2000));$('waterGoal').value=waterGoal;$('waterCount').textContent=`${water} / ${waterGoal} ml`;$('waterBar').style.width=Math.min(100,water/waterGoal*100)+'%'}
 $('saveWaterGoal').addEventListener('click',()=>{const n=Number($('waterGoal').value);if(!Number.isInteger(n)||n<500||n>6000){toast('Choose a daily goal from 500 to 6000 ml.');return}waterGoal=n;localStorage.setItem('af_water_goal',String(n));renderWater();toast('Daily water goal updated.')});
 renderWater();
-async function currentUser(){const {data}=await authClient.auth.getUser();return data?.user||null}
+async function currentUser(){try{const {data,error}=await authClient.auth.getUser();if(error)console.warn('Auth status:',error.message);return data?.user||null}catch(error){console.warn('Auth status unavailable:',error);return null}}
 async function saveWaterCloud(){const user=await currentUser();if(!user)return false;const {error}=await authClient.from('water_logs').upsert({user_id:user.id,log_date:today,amount_ml:water},{onConflict:'user_id,log_date'});if(error){console.error('Water sync:',error.message);return false}return true}
 $('waterAdd').addEventListener('click',async()=>{water+=250;localStorage.setItem('af_water_'+today,water);renderWater();const cloud=await saveWaterCloud();toast(cloud?'Water saved to your account.':'Water saved on this device. Log in to sync across devices.')});
 $('waterReset').addEventListener('click',async()=>{water=0;localStorage.setItem('af_water_'+today,water);renderWater();const cloud=await saveWaterCloud();toast(cloud?'Today’s water tracker reset.':'Today’s water tracker reset on this device.')});
-let weights=JSON.parse(localStorage.getItem('af_weights')||'[]');
+let weights=readJSON('af_weights',[]);if(!Array.isArray(weights))weights=[];
 function renderWeight(){if(weights.length){let last=weights[weights.length-1];$('weightResult').textContent=`Latest: ${last.kg} kg · ${last.date} · ${weights.length} entr${weights.length===1?'y':'ies'}`}else $('weightResult').textContent='No weight entry yet.';const tile=$('latestWeightTile');if(tile)tile.textContent=weights.length?Number(weights[weights.length-1].kg).toFixed(1)+' kg':'—';renderWeightChart()}
 function renderWeightChart(){
   const box=$('weightChart');
@@ -168,11 +171,11 @@ function renderWeightChart(){
   box.className='';box.innerHTML=`<div style="font-weight:700;margin-bottom:8px">Weight progress (last ${entries.length} entries)</div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Weight progress chart" style="width:100%;height:auto;display:block"><line x1="${L}" y1="${T}" x2="${W-R}" y2="${T}" stroke="#34513e"/><line x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}" stroke="#34513e"/><path d="${line}" fill="none" stroke="#a6ed70" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>${dots}<text x="4" y="${T+4}" fill="currentColor" font-size="12">${max.toFixed(1)}</text><text x="4" y="${H-B+4}" fill="currentColor" font-size="12">${min.toFixed(1)}</text><text x="${L}" y="${H-8}" fill="currentColor" font-size="11">${labels[0]}</text><text x="${W-R}" y="${H-8}" fill="currentColor" font-size="11" text-anchor="end">${labels[1]}</text></svg>`;
 }
 renderWeight();
-$('saveWeight').addEventListener('click',async()=>{let kg=+$('weightLog').value;if(!kg||kg<20||kg>300){toast('Please enter a valid weight.');return}const entry={kg:kg.toFixed(1),date:new Date().toISOString().slice(0,10)};weights.push(entry);localStorage.setItem('af_weights',JSON.stringify(weights));$('weightLog').value='';renderWeight();const user=await currentUser();if(user){const {error}=await authClient.from('weight_logs').insert({user_id:user.id,weight_kg:Number(entry.kg),logged_on:entry.date});toast(error?'Saved on this device; cloud sync needs setup.':'Weight saved to your account.')}else toast('Weight saved on this device. Log in to sync across devices.')});
-async function loadCloudProgress(){const user=await currentUser();if(!user)return;const {data:wData,error:wError}=await authClient.from('water_logs').select('amount_ml').eq('user_id',user.id).eq('log_date',today).maybeSingle();if(!wError&&wData){water=Number(wData.amount_ml)||0;localStorage.setItem('af_water_'+today,water);renderWater()}const {data:kgData,error:kgError}=await authClient.from('weight_logs').select('weight_kg,logged_on').eq('user_id',user.id).order('logged_on',{ascending:false}).limit(30);if(!kgError&&kgData?.length){const cloudEntries=kgData.map(x=>({kg:Number(x.weight_kg).toFixed(1),date:x.logged_on}));const merged=[...weights,...cloudEntries];const seen=new Set();weights=merged.filter(x=>{const k=x.date+'|'+x.kg;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>String(a.date).localeCompare(String(b.date))).slice(-100);localStorage.setItem('af_weights',JSON.stringify(weights));renderWeight()}}
+$('saveWeight').addEventListener('click',async()=>{let kg=+$('weightLog').value;if(!kg||kg<20||kg>300){toast('Please enter a valid weight.');return}const entry={kg:kg.toFixed(1),date:localDateKey()};weights.push(entry);localStorage.setItem('af_weights',JSON.stringify(weights));$('weightLog').value='';renderWeight();const user=await currentUser();if(user){const {error}=await authClient.from('weight_logs').insert({user_id:user.id,weight_kg:Number(entry.kg),logged_on:entry.date});toast(error?'Saved on this device; cloud sync needs setup.':'Weight saved to your account.')}else toast('Weight saved on this device. Log in to sync across devices.')});
+async function loadCloudProgress(){try{const user=await currentUser();if(!user)return;const {data:wData,error:wError}=await authClient.from('water_logs').select('amount_ml').eq('user_id',user.id).eq('log_date',today).maybeSingle();if(!wError&&wData){water=Number(wData.amount_ml)||0;localStorage.setItem('af_water_'+today,water);renderWater()}const {data:kgData,error:kgError}=await authClient.from('weight_logs').select('weight_kg,logged_on').eq('user_id',user.id).order('logged_on',{ascending:false}).limit(30);if(!kgError&&kgData?.length){const cloudEntries=kgData.map(x=>({kg:Number(x.weight_kg).toFixed(1),date:x.logged_on}));const merged=[...weights,...cloudEntries];const seen=new Set();weights=merged.filter(x=>{const k=x.date+'|'+x.kg;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>String(a.date).localeCompare(String(b.date))).slice(-100);localStorage.setItem('af_weights',JSON.stringify(weights));renderWeight()}}catch(error){console.error('Progress sync:',error);}}
 
 // Workout tracking: local backup plus Supabase workout_logs cloud sync.
-let workoutEntries=JSON.parse(localStorage.getItem('af_workouts')||'[]');
+let workoutEntries=readJSON('af_workouts',[]);if(!Array.isArray(workoutEntries))workoutEntries=[];
 function renderWorkoutHistory(){
   const box=$('workoutHistory');
   if(!workoutEntries.length){box.innerHTML='<div class="notice">No workouts recorded yet.</div>';return}
@@ -225,10 +228,11 @@ $('saveWorkout').addEventListener('click',async()=>{
   }else toast('Workout saved on this device. Please log in to sync across devices.');
 });
 async function loadCloudWorkouts(){
-  const user=await currentUser();if(!user)return;
+  try{const user=await currentUser();if(!user)return;
   const {data,error}=await authClient.from('workout_logs').select('workout_name,category,sets,reps,duration_minutes,completed_at').eq('user_id',user.id).order('completed_at',{ascending:false}).limit(30);
   if(error){console.error('Workout history load:',error.message);return;}
   if(data){const merged=[...workoutEntries,...data];const seen=new Set();workoutEntries=merged.filter(x=>{const k=[x.workout_name,x.category,x.completed_at,x.duration_minutes].join('|');if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>new Date(b.completed_at||b.date||0)-new Date(a.completed_at||a.date||0)).slice(0,100);localStorage.setItem('af_workouts',JSON.stringify(workoutEntries));renderWorkoutHistory();updateWeeklySummary();}
+  }catch(error){console.error('Workout sync:',error);}
 }
 
 let hindi=localStorage.getItem('af_language')==='hi';
@@ -250,6 +254,7 @@ function closeAuth() { authOverlay.classList.remove("show"); }
 $("authOpenBtn").addEventListener("click", openAuth);
 $("authCloseBtn").addEventListener("click", closeAuth);
 authOverlay.addEventListener("click", (event) => { if (event.target === authOverlay) closeAuth(); });
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closeAuth()});
 $("authSignupBtn").addEventListener("click", async () => {
   const fullName = $("authFullName").value.trim();
   const email = $("authEmail").value.trim();
