@@ -41,6 +41,20 @@ input,select{min-height:44px}
 .inline-field{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
 .inline-field input{width:110px;background:#07110c;border:1px solid #304537;border-radius:10px;padding:9px;color:white}
 @media(max-width:700px){.plan-list{grid-template-columns:1fr}.summary-grid{grid-template-columns:1fr 1fr}}
+
+/* A FITNESS business information pages */
+.business-pages{padding:58px 0 72px;border-top:1px solid rgba(166,237,112,.14)}
+.business-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:24px 0}
+.business-card{background:rgba(255,255,255,.035);border:1px solid rgba(166,237,112,.18);border-radius:16px;padding:20px}
+.business-card h3{color:var(--lime,#a6ed70);margin:0 0 10px}
+.business-card p,.business-copy p,.business-copy li{color:var(--muted,#b7c5bc);line-height:1.75}
+.business-copy{max-width:900px}
+.business-copy h3{margin:24px 0 8px;color:var(--lime,#a6ed70)}
+.business-copy ul{padding-left:22px}
+.business-nav{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}
+.business-nav a{color:var(--lime,#a6ed70);text-decoration:none}
+.business-note{padding:14px 16px;border-left:3px solid var(--lime,#a6ed70);background:rgba(166,237,112,.07);border-radius:8px}
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -110,8 +124,106 @@ input,select{min-height:44px}
 </div></section>
 <section class="section" id="premium"><div class="container"><div class="premium"><div><div class="kicker">GO BEYOND THE BASICS</div><h2 data-en="Make your next level personal." data-hi="अपनी फिटनेस को पर्सनल बनाएं।">Make your next level personal.</h2><p class="sub" data-en="Premium is planned to include personalised workout and diet plans, 30/60/90-day programmes, advanced analytics and expert guidance." data-hi="प्रीमियम में पर्सनल वर्कआउट और डाइट प्लान, 30/60/90 दिन के प्रोग्राम, एडवांस एनालिटिक्स और एक्सपर्ट गाइडेंस शामिल करने की योजना है।">Premium is planned to include personalised workout and diet plans, 30/60/90-day programmes, advanced analytics and expert guidance.</p><ul><li>Personalised workout and diet plans</li><li>Advanced progress and macro tracking</li><li>Structured 30, 60 and 90-day programmes</li></ul><span class="tag">COMING SOON</span></div><div><div class="price">Premium</div><p class="notice">Membership and payments are not enabled in this starter version.</p><a href="#home" class="btn primary">Explore A FITNESS</a></div></div></div></section>
 <section class="section"><div class="container"><div class="quote"><div class="kicker">A FITNESS MINDSET</div><blockquote>“Your Fitness. Your Journey. Your Transformation.”</blockquote><p>Consistency over perfection. One day at a time.</p></div></div></section>
+
+<section class="section business-pages" id="about">
+  <div class="container business-copy">
+    <div class="kicker">ABOUT A FITNESS</div>
+    <h2>Fitness that fits your journey.</h2>
+    <p>A FITNESS is a fitness learning and tracking platform created to help people build healthier habits through accessible workout guidance, basic nutrition education and simple progress tools.</p>
+    <p>Our goal is to make fitness information easier to understand for beginners and regular fitness enthusiasts. Explore at your own pace, stay consistent and choose activities that suit your ability and circumstances.</p>
+    <div class="business-grid">
+      <div class="business-card"><h3>Our Mission</h3><p>Make practical fitness education and habit tracking accessible to more people.</p></div>
+      <div class="business-card"><h3>Our Approach</h3><p>Encourage consistency, realistic goals, safe exercise and informed choices.</p></div>
+      <div class="business-card"><h3>Our Promise</h3><p>Present information clearly and keep improving the A FITNESS experience.</p></div>
+    </div>
+    <p class="business-note">A FITNESS provides general educational information. It is not a substitute for medical advice, diagnosis, treatment or individual coaching from a qualified professional.</p>
+  </div>
+</section>
+
+<section class="section business-pages" id="contact">
+  <div class="container business-copy">
+    <div class="kicker">GET IN TOUCH</div>
+    <h2>Contact A FITNESS</h2>
+    <p>For website feedback, corrections, partnership enquiries or general questions, contact the A FITNESS team.</p>
+    <div class="business-card">
+      <h3>Email</h3>
+      <p><strong>Public contact email:</strong> <a href="mailto:mahiratkumar0718@gmail.com">mahiratkumar0718@gmail.com</a></p>
+      <p>You can email us directly for website feedback, corrections or partnership enquiries.</p>
+    </div>
+    <p>We aim to review genuine enquiries and respond when possible. Please do not send passwords, payment details or sensitive personal or medical information by email.</p>
+  </div>
+</section>
+
+<section class="section business-pages" id="privacy">
+  <div class="container business-copy">
+    <div class="kicker">LEGAL INFORMATION</div>
+    <h2>Privacy Policy</h2>
+    <p><strong>Last updated: 10 November 2026</strong></p>
+    <p>This Privacy Policy explains, in general terms, how A FITNESS handles information when you use this website. Update this policy if the website's actual data practices or service providers change.</p>
+    <h3>Information you provide</h3>
+    <p>If you create an account, the authentication service may process your email address and account credentials. Fitness entries such as water intake, weight and workout records may be stored on your device and, when cloud sync is available and you are signed in, in the A FITNESS project's Supabase database.</p>
+    <h3>How information is used</h3>
+    <ul><li>To provide login and account features.</li><li>To save and display your fitness tracking entries.</li><li>To maintain, secure and improve the website.</li><li>To respond to enquiries you send us.</li></ul>
+    <h3>Storage and service providers</h3>
+    <p>Some information may be processed by third-party services used to host the website, authenticate users or provide database functionality, including GitHub Pages and Supabase. Those services operate under their own terms and privacy policies.</p>
+    <h3>Your choices</h3>
+    <p>You can choose not to create an account. You can avoid entering optional fitness information. You may sign out of your account. Browser storage can be cleared through your browser settings, but doing so may remove locally saved entries.</p>
+    <h3>Security and children</h3>
+    <p>We take reasonable steps through the services we use, but no online service can guarantee absolute security. This website is not designed to knowingly collect personal information from children without appropriate permission and supervision.</p>
+    <h3>Policy updates and contact</h3>
+    <p>This policy may be updated as features change. For privacy questions or requests, use the contact details on this website after the public contact email has been added.</p>
+    <p class="business-note">Important: this is a starter policy template, not legal advice. Confirm that it accurately describes your live data collection, analytics, cookies, advertising and retention practices before relying on it.</p>
+  </div>
+</section>
+
+<section class="section business-pages" id="terms">
+  <div class="container business-copy">
+    <div class="kicker">TERMS OF USE</div>
+    <h2>Terms &amp; Conditions</h2>
+    <p><strong>Last updated: 10 November 2026</strong></p>
+    <p>By accessing A FITNESS, you agree to use the website lawfully and responsibly. If you do not agree with these terms, please stop using the website.</p>
+    <h3>Website content</h3>
+    <p>Workout guidance, nutrition information, calculators and tracking tools are provided for general educational and informational purposes. Features may change, be interrupted or be unavailable from time to time.</p>
+    <h3>Safe use</h3>
+    <p>You are responsible for choosing activities appropriate to your fitness level and for using equipment safely. Stop exercising if you feel pain, dizziness, faintness or unusual discomfort. Seek advice from a qualified healthcare professional before starting a new exercise or diet programme if you have a health concern.</p>
+    <h3>Accounts</h3>
+    <p>Keep your login credentials private and provide accurate account information. You are responsible for activity carried out through your account. Do not attempt to access another person's account or interfere with the website.</p>
+    <h3>Acceptable use and intellectual property</h3>
+    <p>Do not misuse, copy for commercial redistribution, disrupt or attempt to compromise the website or its services. Unless stated otherwise, A FITNESS branding and original website materials belong to their respective owners.</p>
+    <h3>Availability and liability</h3>
+    <p>The website is provided on an “as available” basis. To the extent permitted by applicable law, A FITNESS is not responsible for losses arising from reliance on general information, interruptions, data loss or third-party services. Nothing in these terms excludes rights that cannot legally be excluded.</p>
+    <h3>Changes</h3>
+    <p>We may update these terms when the website changes. Continued use after an update means you accept the revised terms, to the extent permitted by law.</p>
+    <p class="business-note">This is a general starter template. Have the final terms reviewed for your location and business model before launching paid services.</p>
+  </div>
+</section>
+
+<section class="section business-pages" id="disclaimer">
+  <div class="container business-copy">
+    <div class="kicker">FITNESS &amp; HEALTH DISCLAIMER</div>
+    <h2>Disclaimer</h2>
+    <p>A FITNESS shares general fitness, workout, nutrition and wellness education. The content, calculators, estimates and tracking tools are not medical advice and are not intended to diagnose, treat, cure or prevent any disease.</p>
+    <h3>Consult a professional</h3>
+    <p>Consult a qualified doctor or healthcare professional before making significant changes to exercise, diet or hydration, especially if you are pregnant, have an existing medical condition, take medication, have an injury or are returning to exercise after a long break.</p>
+    <h3>Use tools carefully</h3>
+    <p>BMI, BMR, calorie and other calculator results are estimates. Individual needs vary. Do not use an estimate as a substitute for professional assessment or as the sole basis for health decisions.</p>
+    <h3>Exercise safely</h3>
+    <p>Use correct technique, suitable equipment and an appropriate level of effort. Stop if you experience concerning symptoms and seek medical help when needed. You are responsible for your own exercise choices and use of the website.</p>
+    <h3>External links and future services</h3>
+    <p>Links to third-party websites or products are provided for convenience and do not necessarily mean A FITNESS endorses them. If affiliate links or paid services are introduced, they should be clearly disclosed before use.</p>
+  </div>
+</section>
+
 </main>
-<footer class="footer"><div class="container footer-inner"><div><a class="brand" href="#home"><img class="brand-mark-img" src="./a-fitness-icon.png" alt="A FITNESS logo"><span>A FITNESS</span></a><p>Your Fitness. Your Journey. Your Transformation.</p></div><div><a href="#workout">Workout</a> &nbsp;·&nbsp; <a href="#nutrition">Nutrition</a> &nbsp;·&nbsp; <a href="#calculators">Calculators</a> &nbsp;·&nbsp; <a href="#premium">Premium</a><p>© <span id="year"></span> A FITNESS. Built for your journey.</p></div></div></footer>
+<footer class="footer"><div class="container footer-inner"><div><a class="brand" href="#home"><img class="brand-mark-img" src="./a-fitness-icon.png" alt="A FITNESS logo"><span>A FITNESS</span></a><p>Your Fitness. Your Journey. Your Transformation.</p></div><div><a href="#workout">Workout</a> &nbsp;·&nbsp; <a href="#nutrition">Nutrition</a> &nbsp;·&nbsp; <a href="#calculators">Calculators</a> &nbsp;·&nbsp; <a href="#premium">Premium</a>
+<div class="business-nav" aria-label="Business information">
+  <a href="#about">About</a>
+  <a href="#contact">Contact</a>
+  <a href="#privacy">Privacy Policy</a>
+  <a href="#terms">Terms &amp; Conditions</a>
+  <a href="#disclaimer">Disclaimer</a>
+</div>
+<p>© <span id="year"></span> A FITNESS. Built for your journey.</p></div></div></footer>
 <div class="toast" id="toast" role="status"></div>
 
 <div class="auth-overlay" id="authOverlay" role="dialog" aria-modal="true" aria-labelledby="authTitle">
