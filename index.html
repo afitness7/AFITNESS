@@ -25,6 +25,22 @@
 .auth-actions{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}.auth-actions button{flex:1}.auth-close{float:right;background:transparent;border:0;color:white;font-size:1.4rem;cursor:pointer}
 #authMessage{font-size:.9rem;margin-top:12px;min-height:22px;color:var(--lime)}#authUser{display:none;color:var(--lime);font-size:.8rem;max-width:150px;overflow-wrap:anywhere}
 
+
+/* Consolidated A FITNESS improvements */
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+input,select{min-height:44px}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.plan-list{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}
+.plan-card{background:linear-gradient(145deg,#14251b,#0d1912);border:1px solid var(--line);border-radius:18px;padding:20px}
+.plan-card ul{padding-left:20px;color:var(--muted);font-size:.9rem}
+.plan-card li{margin:5px 0}
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.summary-tile{background:#a6ed7010;border:1px solid #a6ed7030;border-radius:14px;padding:15px}
+.summary-tile strong{display:block;color:var(--lime);font-size:1.45rem}
+.summary-tile span{font-size:.8rem;color:var(--muted)}
+.inline-field{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.inline-field input{width:110px;background:#07110c;border:1px solid #304537;border-radius:10px;padding:9px;color:white}
+@media(max-width:700px){.plan-list{grid-template-columns:1fr}.summary-grid{grid-template-columns:1fr 1fr}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -51,17 +67,28 @@
 <div class="card workout-card"><div><div class="card-icon">🏃</div><h3 data-en="Cardio" data-hi="कार्डियो">Cardio</h3><p data-en="Get moving and build your endurance." data-hi="फिटनेस और स्टैमिना बढ़ाने के लिए एक्टिव रहें।">Get moving and build your endurance.</p></div><span class="tag">FREE</span></div>
 <div class="card workout-card"><div><div class="card-icon">📚</div><h3 data-en="Exercise library" data-hi="एक्सरसाइज लाइब्रेरी">Exercise library</h3><p data-en="Learn the basics of form, reps and technique." data-hi="एक्सरसाइज का सही तरीका और तकनीक सीखें।">Learn the basics of form, reps and technique.</p></div><span class="tag">GUIDES</span></div>
 <div class="card workout-card"><div><div class="card-icon">🎯</div><h3 data-en="Daily challenge" data-hi="डेली चैलेंज">Daily challenge</h3><p data-en="Small daily actions add up to lasting habits." data-hi="रोज़ के छोटे कदम अच्छी आदतें बनाते हैं।">Small daily actions add up to lasting habits.</p></div><span class="tag">FREE</span></div>
+</div>
+<div class="section-head" style="margin-top:34px"><div><div class="kicker">START WITH A PLAN</div><h2 data-en="Simple workout plans" data-hi="आसान वर्कआउट प्लान">Simple workout plans</h2><p class="sub" data-en="Choose a beginner-friendly routine. Start light, warm up first and rest when needed." data-hi="शुरुआती लोगों के लिए रूटीन चुनें। हल्के से शुरू करें, वार्म-अप करें और जरूरत पर आराम करें।">Choose a beginner-friendly routine. Start light, warm up first and rest when needed.</p></div></div>
+<div class="plan-list">
+ <article class="plan-card"><h3 data-en="🏠 Beginner full body" data-hi="🏠 शुरुआती फुल बॉडी">🏠 Beginner full body</h3><p class="notice">3 days/week · Bodyweight</p><ul><li>Bodyweight squats · 3 × 10</li><li>Wall or knee push-ups · 3 × 8</li><li>Glute bridges · 3 × 12</li><li>Plank · 3 × 20 seconds</li></ul><button data-en="Add to tracker" data-hi="ट्रैकर में जोड़ें" class="btn primary small plan-use" data-name="Beginner full body" data-category="Home workout" data-sets="3" data-reps="10" data-minutes="25">Add to tracker</button></article>
+ <article class="plan-card"><h3 data-en="💪 Basic strength" data-hi="💪 बेसिक स्ट्रेंथ">💪 Basic strength</h3><p class="notice">3 days/week · Gym or home</p><ul><li>Squats · 3 × 10</li><li>Push-ups or chest press · 3 × 8</li><li>Rows · 3 × 10</li><li>Dead bug · 3 × 10</li></ul><button data-en="Add to tracker" data-hi="ट्रैकर में जोड़ें" class="btn primary small plan-use" data-name="Basic strength" data-category="Strength" data-sets="3" data-reps="10" data-minutes="35">Add to tracker</button></article>
+ <article class="plan-card"><h3 data-en="🏃 Cardio starter" data-hi="🏃 कार्डियो शुरुआत">🏃 Cardio starter</h3><p class="notice">3–5 days/week · Low impact option</p><ul><li>Easy walk · 5 minutes</li><li>Brisk walk · 10–15 minutes</li><li>Slow walk cooldown · 5 minutes</li><li>Gentle stretches</li></ul><button data-en="Add to tracker" data-hi="ट्रैकर में जोड़ें" class="btn primary small plan-use" data-name="Cardio starter" data-category="Cardio" data-sets="1" data-reps="1" data-minutes="25">Add to tracker</button></article>
 </div></div></section>
 <section class="section" id="nutrition"><div class="container"><div class="section-head"><div><div class="kicker">FUEL YOUR BODY</div><h2 data-en="Eat well. Feel stronger." data-hi="अच्छा खाएं, मजबूत बनें।">Eat well. Feel stronger.</h2><p class="sub" data-en="Build balanced habits with simple nutrition guidance." data-hi="आसान न्यूट्रिशन गाइड से संतुलित खान-पान की आदत बनाएं।">Build balanced habits with simple nutrition guidance.</p></div></div>
-<div class="grid"><div class="card"><div class="card-icon">🥗</div><h3 data-en="Balanced plate" data-hi="संतुलित भोजन">Balanced plate</h3><p data-en="Add vegetables, protein, whole grains and healthy fats to your meals." data-hi="अपने भोजन में सब्जियां, प्रोटीन, साबुत अनाज और हेल्दी फैट शामिल करें।">Add vegetables, protein, whole grains and healthy fats to your meals.</p></div><div class="card"><div class="card-icon">🥚</div><h3 data-en="Protein basics" data-hi="प्रोटीन की जानकारी">Protein basics</h3><p data-en="Understand everyday protein sources and why they matter." data-hi="प्रोटीन के रोज़मर्रा के स्रोत और उनका महत्व जानें।">Understand everyday protein sources and why they matter.</p></div><div class="card"><div class="card-icon">💧</div><h3 data-en="Stay hydrated" data-hi="पानी पीते रहें">Stay hydrated</h3><p data-en="Use your water tracker to build a consistent hydration habit." data-hi="पानी ट्रैकर से रोज़ पर्याप्त पानी पीने की आदत बनाएं।">Use your water tracker to build a consistent hydration habit.</p></div></div></div></section>
+<div class="grid"><div class="card"><div class="card-icon">🥗</div><h3 data-en="Balanced plate" data-hi="संतुलित भोजन">Balanced plate</h3><p data-en="Build meals with vegetables, dal/beans, roti or rice, and a little healthy fat." data-hi="सब्जियां, दाल/बीन्स, रोटी या चावल और थोड़ा हेल्दी फैट लेकर संतुलित भोजन बनाएं।">Build meals with vegetables, dal/beans, roti or rice, and a little healthy fat.</p></div><div class="card"><div class="card-icon">🥚</div><h3 data-en="Affordable protein" data-hi="किफायती प्रोटीन">Affordable protein</h3><p data-en="Try dal, chana, rajma, milk, curd, soy, eggs or paneer according to your preference." data-hi="अपनी पसंद के अनुसार दाल, चना, राजमा, दूध, दही, सोया, अंडे या पनीर लें।">Try dal, chana, rajma, milk, curd, soy, eggs or paneer according to your preference.</p></div><div class="card"><div class="card-icon">💧</div><h3 data-en="Stay hydrated" data-hi="पानी पीते रहें">Stay hydrated</h3><p data-en="Use your water tracker to build a consistent hydration habit." data-hi="पानी ट्रैकर से रोज़ पर्याप्त पानी पीने की आदत बनाएं।">Use your water tracker to build a consistent hydration habit.</p></div></div></div></section>
 <section class="section" id="calculators"><div class="container"><div class="section-head"><div><div class="kicker">KNOW YOUR NUMBERS</div><h2 data-en="Free fitness calculators." data-hi="फ्री फिटनेस कैलकुलेटर।">Free fitness calculators.</h2><p class="sub" data-en="Get a useful starting estimate. These tools are educational, not medical advice." data-hi="शुरुआती अनुमान पाएं। ये टूल केवल जानकारी के लिए हैं, मेडिकल सलाह नहीं।">Get a useful starting estimate. These tools are educational, not medical advice.</p></div></div>
 <div class="split">
 <div class="calculator"><h3>BMI Calculator</h3><p>Estimate your body mass index.</p><div class="formgrid"><div class="field"><label>Height (cm)</label><input id="height" type="number" min="80" max="250" placeholder="e.g. 170"></div><div class="field"><label>Weight (kg)</label><input id="weight" type="number" min="20" max="300" placeholder="e.g. 65"></div></div><button class="btn primary" style="margin-top:14px" id="bmiBtn">Calculate BMI</button><div class="result" id="bmiResult">Your result will appear here.</div></div>
 <div class="calculator"><h3>Daily calorie estimate</h3><p>Estimate maintenance calories using Mifflin–St Jeor.</p><div class="formgrid"><div class="field"><label>Age</label><input id="age" type="number" min="15" max="100" placeholder="e.g. 25"></div><div class="field"><label>Sex</label><select id="sex"><option value="male">Male</option><option value="female">Female</option></select></div><div class="field"><label>Height (cm)</label><input id="calHeight" type="number" placeholder="170"></div><div class="field"><label>Weight (kg)</label><input id="calWeight" type="number" placeholder="65"></div><div class="field" style="grid-column:1/-1"><label>Activity level</label><select id="activity"><option value="1.2">Sedentary</option><option value="1.375">Lightly active</option><option value="1.55">Moderately active</option><option value="1.725">Very active</option><option value="1.9">Extra active</option></select></div></div><button class="btn primary" style="margin-top:14px" id="calBtn">Calculate calories</button><div class="result" id="calResult">Your result will appear here.</div></div>
 </div><p class="notice">BMI and calorie estimates are approximate. Individual needs vary by health, age and activity. Consult a qualified professional for personalised advice.</p></div></section>
-<section class="section" id="progress"><div class="container"><div class="section-head"><div><div class="kicker">SMALL STEPS, BIG CHANGE</div><h2 data-en="Track your daily progress." data-hi="अपनी रोज़ की प्रोग्रेस ट्रैक करें।">Track your daily progress.</h2><p class="sub" data-en="Your entries are saved only in this browser on this device." data-hi="आपकी एंट्री केवल इसी डिवाइस के इस ब्राउज़र में सेव होती हैं।">Your entries are saved only in this browser on this device.</p></div></div>
+<section class="section" id="progress"><div class="container"><div class="section-head"><div><div class="kicker">SMALL STEPS, BIG CHANGE</div><h2 data-en="Track your daily progress." data-hi="अपनी रोज़ की प्रोग्रेस ट्रैक करें।">Track your daily progress.</h2><p class="sub" data-en="Track locally, or log in to sync supported progress with your account." data-hi="आपकी एंट्री केवल इसी डिवाइस के इस ब्राउज़र में सेव होती हैं।">Your entries are saved only in this browser on this device.</p></div></div>
+<div class="summary-grid" aria-live="polite">
+ <div class="summary-tile"><strong id="weeklyWorkoutCount">0</strong><span data-en="Workouts this week" data-hi="इस सप्ताह वर्कआउट">Workouts this week</span></div>
+ <div class="summary-tile"><strong id="weeklyMinutes">0 min</strong><span data-en="Training time this week" data-hi="इस सप्ताह ट्रेनिंग समय">Training time this week</span></div>
+ <div class="summary-tile"><strong id="latestWeightTile">—</strong><span data-en="Latest weight" data-hi="नवीनतम वजन">Latest weight</span></div>
+</div>
 <div class="split">
-<div class="calculator"><h3>💧 Water tracker</h3><p>Daily goal: 2,000 ml (adjustable habit target).</p><div class="tracker-row"><button class="btn primary small" id="waterAdd">+ 250 ml</button><button class="btn secondary small" id="waterReset">Reset today</button><strong id="waterCount">0 / 2000 ml</strong></div><div class="progressbar"><span id="waterBar"></span></div><div class="notice">This is a general tracking target, not a medical recommendation.</div></div>
+<div class="calculator"><h3>💧 Water tracker</h3><p>Daily goal: 2,000 ml (adjustable habit target).</p><div class="tracker-row"><button class="btn primary small" id="waterAdd">+ 250 ml</button><button class="btn secondary small" id="waterReset">Reset today</button><strong id="waterCount">0 / 2000 ml</strong></div><div class="inline-field"><label for="waterGoal" data-en="Daily goal (ml)" data-hi="रोज़ का लक्ष्य (ml)">Daily goal (ml)</label><input id="waterGoal" type="number" min="500" max="6000" step="250" value="2000"><button class="btn secondary small" id="saveWaterGoal" data-en="Save goal" data-hi="लक्ष्य सेव करें">Save goal</button></div><div class="progressbar"><span id="waterBar"></span></div><div class="notice">This is a general tracking target, not a medical recommendation.</div></div>
 <div class="calculator"><h3>⚖️ Weight log</h3><p>Record your weight and see your latest entry.</p><div class="tracker-row"><input id="weightLog" type="number" min="20" max="300" step=".1" placeholder="Weight in kg" class="field input"><button class="btn primary small" id="saveWeight">Save weight</button></div><div class="result" id="weightResult">No weight entry yet.</div><div id="weightChart" class="notice" style="margin-top:14px;min-height:90px">Add at least two weight entries to see your progress chart.</div></div>
 </div>
 <div class="calculator" style="margin-top:20px">
@@ -77,7 +104,8 @@
 <button class="btn primary" id="saveWorkout" style="margin-top:14px">Save completed workout</button>
 <div class="result" id="workoutMessage">Your workout history will appear here.</div>
 <div id="workoutHistory" style="margin-top:12px;display:grid;gap:9px"></div>
-<p class="notice">Log in to sync workout history across devices. Without login, entries stay in this browser.</p>
+<div class="inline-field"><button class="btn secondary small" id="exportDataBtn" data-en="Export my progress (CSV)" data-hi="मेरी प्रोग्रेस डाउनलोड करें (CSV)">Export my progress (CSV)</button><span class="notice">Download a copy of your local progress data.</span></div>
+<p class="notice">Log in to sync workout and weight history across devices. Without login, entries stay in this browser.</p>
 </div>
 </div></section>
 <section class="section" id="premium"><div class="container"><div class="premium"><div><div class="kicker">GO BEYOND THE BASICS</div><h2 data-en="Make your next level personal." data-hi="अपनी फिटनेस को पर्सनल बनाएं।">Make your next level personal.</h2><p class="sub" data-en="Premium is planned to include personalised workout and diet plans, 30/60/90-day programmes, advanced analytics and expert guidance." data-hi="प्रीमियम में पर्सनल वर्कआउट और डाइट प्लान, 30/60/90 दिन के प्रोग्राम, एडवांस एनालिटिक्स और एक्सपर्ट गाइडेंस शामिल करने की योजना है।">Premium is planned to include personalised workout and diet plans, 30/60/90-day programmes, advanced analytics and expert guidance.</p><ul><li>Personalised workout and diet plans</li><li>Advanced progress and macro tracking</li><li>Structured 30, 60 and 90-day programmes</li></ul><span class="tag">COMING SOON</span></div><div><div class="price">Premium</div><p class="notice">Membership and payments are not enabled in this starter version.</p><a href="#home" class="btn primary">Explore A FITNESS</a></div></div></div></section>
@@ -98,6 +126,7 @@
       <button class="btn primary" id="authSignupBtn">Sign Up</button>
       <button class="btn secondary" id="authLoginBtn">Login</button>
     </div>
+    <button class="link" id="forgotPasswordBtn" data-en="Forgot password?" data-hi="पासवर्ड भूल गए?" type="button" style="background:none;border:0;margin-top:12px;padding:0">Forgot password?</button>
     <div class="auth-actions">
       <button class="btn secondary" id="authLogoutBtn" style="display:none">Logout</button>
     </div>
@@ -112,17 +141,19 @@ $('year').textContent=new Date().getFullYear();
 $('menuBtn').addEventListener('click',()=>$('navlinks').classList.toggle('open'));
 document.querySelectorAll('.navlinks a').forEach(a=>a.addEventListener('click',()=>$('navlinks').classList.remove('open')));
 function toast(msg){$('toast').textContent=msg;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2200)}
-$('bmiBtn').addEventListener('click',()=>{let h=+$('height').value/100,w=+$('weight').value;if(!h||!w||h<.8||h>2.5||w<20||w>300){$('bmiResult').textContent='Please enter a valid height and weight.';return}let bmi=w/(h*h),cat=bmi<18.5?'Below usual range':bmi<25?'Usual range':bmi<30?'Above usual range':'High range';$('bmiResult').textContent=`BMI: ${bmi.toFixed(1)} · ${cat}`});
+$('bmiBtn').addEventListener('click',()=>{let h=+$('height').value/100,w=+$('weight').value;if(!h||!w||h<.8||h>2.5||w<20||w>300){$('bmiResult').textContent='Please enter a valid height and weight.';return}let bmi=w/(h*h),cat=bmi<18.5?'Below usual adult range':bmi<25?'Usual adult range':bmi<30?'Above usual adult range':'High adult range';$('bmiResult').textContent=`BMI: ${bmi.toFixed(1)} · ${cat}. Screening estimate only.`});
 $('calBtn').addEventListener('click',()=>{let age=+$('age').value,h=+$('calHeight').value,w=+$('calWeight').value,sex=$('sex').value,act=+$('activity').value;if(!age||!h||!w||age<15||age>100||h<100||h>230||w<30||w>250){$('calResult').textContent='Please enter valid age, height and weight.';return}let bmr=10*w+6.25*h-5*age+(sex==='male'?5:-161),cal=Math.round(bmr*act);$('calResult').textContent=`BMR: ${Math.round(bmr)} kcal/day · Estimated maintenance: ${cal} kcal/day`});
 const today=new Date().toISOString().slice(0,10);let water=Number(localStorage.getItem('af_water_'+today)||0);
-function renderWater(){$('waterCount').textContent=`${water} / 2000 ml`;$('waterBar').style.width=Math.min(100,water/2000*100)+'%'}
+let waterGoal=Number(localStorage.getItem('af_water_goal')||2000);
+function renderWater(){waterGoal=Math.min(6000,Math.max(500,waterGoal||2000));$('waterGoal').value=waterGoal;$('waterCount').textContent=`${water} / ${waterGoal} ml`;$('waterBar').style.width=Math.min(100,water/waterGoal*100)+'%'}
+$('saveWaterGoal').addEventListener('click',()=>{const n=Number($('waterGoal').value);if(!Number.isInteger(n)||n<500||n>6000){toast('Choose a daily goal from 500 to 6000 ml.');return}waterGoal=n;localStorage.setItem('af_water_goal',String(n));renderWater();toast('Daily water goal updated.')});
 renderWater();
 async function currentUser(){const {data}=await authClient.auth.getUser();return data?.user||null}
 async function saveWaterCloud(){const user=await currentUser();if(!user)return false;const {error}=await authClient.from('water_logs').upsert({user_id:user.id,log_date:today,amount_ml:water},{onConflict:'user_id,log_date'});if(error){console.error('Water sync:',error.message);return false}return true}
 $('waterAdd').addEventListener('click',async()=>{water+=250;localStorage.setItem('af_water_'+today,water);renderWater();const cloud=await saveWaterCloud();toast(cloud?'Water saved to your account.':'Water saved on this device. Log in to sync across devices.')});
 $('waterReset').addEventListener('click',async()=>{water=0;localStorage.setItem('af_water_'+today,water);renderWater();const cloud=await saveWaterCloud();toast(cloud?'Today’s water tracker reset.':'Today’s water tracker reset on this device.')});
 let weights=JSON.parse(localStorage.getItem('af_weights')||'[]');
-function renderWeight(){if(weights.length){let last=weights[weights.length-1];$('weightResult').textContent=`Latest: ${last.kg} kg · ${last.date} · ${weights.length} entr${weights.length===1?'y':'ies'}`}else $('weightResult').textContent='No weight entry yet.';renderWeightChart()}
+function renderWeight(){if(weights.length){let last=weights[weights.length-1];$('weightResult').textContent=`Latest: ${last.kg} kg · ${last.date} · ${weights.length} entr${weights.length===1?'y':'ies'}`}else $('weightResult').textContent='No weight entry yet.';const tile=$('latestWeightTile');if(tile)tile.textContent=weights.length?Number(weights[weights.length-1].kg).toFixed(1)+' kg':'—';renderWeightChart()}
 function renderWeightChart(){
   const box=$('weightChart');
   const entries=weights.slice().filter(x=>Number(x.kg)>0).sort((a,b)=>String(a.date).localeCompare(String(b.date))).slice(-12);
@@ -138,7 +169,7 @@ function renderWeightChart(){
 }
 renderWeight();
 $('saveWeight').addEventListener('click',async()=>{let kg=+$('weightLog').value;if(!kg||kg<20||kg>300){toast('Please enter a valid weight.');return}const entry={kg:kg.toFixed(1),date:new Date().toISOString().slice(0,10)};weights.push(entry);localStorage.setItem('af_weights',JSON.stringify(weights));$('weightLog').value='';renderWeight();const user=await currentUser();if(user){const {error}=await authClient.from('weight_logs').insert({user_id:user.id,weight_kg:Number(entry.kg),logged_on:entry.date});toast(error?'Saved on this device; cloud sync needs setup.':'Weight saved to your account.')}else toast('Weight saved on this device. Log in to sync across devices.')});
-async function loadCloudProgress(){const user=await currentUser();if(!user)return;const {data:wData,error:wError}=await authClient.from('water_logs').select('amount_ml').eq('user_id',user.id).eq('log_date',today).maybeSingle();if(!wError&&wData){water=Number(wData.amount_ml)||0;localStorage.setItem('af_water_'+today,water);renderWater()}const {data:kgData,error:kgError}=await authClient.from('weight_logs').select('weight_kg,logged_on').eq('user_id',user.id).order('logged_on',{ascending:true}).limit(30);if(!kgError&&kgData?.length){const cloudEntries=kgData.map(x=>({kg:Number(x.weight_kg).toFixed(1),date:x.logged_on}));const merged=[...weights,...cloudEntries];const seen=new Set();weights=merged.filter(x=>{const k=x.date+'|'+x.kg;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>String(a.date).localeCompare(String(b.date)));localStorage.setItem('af_weights',JSON.stringify(weights));renderWeight()}}
+async function loadCloudProgress(){const user=await currentUser();if(!user)return;const {data:wData,error:wError}=await authClient.from('water_logs').select('amount_ml').eq('user_id',user.id).eq('log_date',today).maybeSingle();if(!wError&&wData){water=Number(wData.amount_ml)||0;localStorage.setItem('af_water_'+today,water);renderWater()}const {data:kgData,error:kgError}=await authClient.from('weight_logs').select('weight_kg,logged_on').eq('user_id',user.id).order('logged_on',{ascending:false}).limit(30);if(!kgError&&kgData?.length){const cloudEntries=kgData.map(x=>({kg:Number(x.weight_kg).toFixed(1),date:x.logged_on}));const merged=[...weights,...cloudEntries];const seen=new Set();weights=merged.filter(x=>{const k=x.date+'|'+x.kg;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>String(a.date).localeCompare(String(b.date))).slice(-100);localStorage.setItem('af_weights',JSON.stringify(weights));renderWeight()}}
 
 // Workout tracking: local backup plus Supabase workout_logs cloud sync.
 let workoutEntries=JSON.parse(localStorage.getItem('af_workouts')||'[]');
@@ -156,6 +187,22 @@ function renderWorkoutHistory(){
   }).join('');
 }
 renderWorkoutHistory();
+function updateWeeklySummary(){
+ const now=new Date();const start=new Date(now);start.setHours(0,0,0,0);start.setDate(start.getDate()-((start.getDay()+6)%7));
+ const recent=workoutEntries.filter(x=>{const d=new Date(x.completed_at||x.date||0);return !Number.isNaN(d.getTime())&&d>=start});
+ $('weeklyWorkoutCount').textContent=recent.length;
+ $('weeklyMinutes').textContent=recent.reduce((n,x)=>n+(Number(x.duration_minutes)||0),0)+' min';
+}
+updateWeeklySummary();
+document.querySelectorAll('.plan-use').forEach(btn=>btn.addEventListener('click',()=>{
+ $('workoutName').value=btn.dataset.name;$('workoutCategory').value=btn.dataset.category;$('workoutSets').value=btn.dataset.sets;$('workoutReps').value=btn.dataset.reps;$('workoutDuration').value=btn.dataset.minutes;
+ location.hash='progress';toast('Plan added to your workout tracker.');
+}));
+$('exportDataBtn').addEventListener('click',()=>{
+ const rows=[['type','date','name_or_weight','category','sets','reps','duration_minutes'],...weights.map(x=>['weight',x.date,x.kg+' kg','','','','']),...workoutEntries.map(x=>['workout',x.completed_at||x.date||'',x.workout_name||x.name||'',x.category||'',x.sets||'',x.reps||'',x.duration_minutes||''])];
+ const csv=rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='a-fitness-progress.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);toast('Your progress export is ready.');
+});
 $('saveWorkout').addEventListener('click',async()=>{
   const name=$('workoutName').value.trim();
   const category=$('workoutCategory').value;
@@ -168,7 +215,7 @@ $('saveWorkout').addEventListener('click',async()=>{
   const entry={workout_name:name,category,sets,reps,duration_minutes:duration||null,completed_at:new Date().toISOString()};
   workoutEntries.unshift(entry);
   localStorage.setItem('af_workouts',JSON.stringify(workoutEntries));
-  renderWorkoutHistory();
+  renderWorkoutHistory();updateWeeklySummary();
   $('workoutName').value='';$('workoutSets').value='';$('workoutReps').value='';$('workoutDuration').value='';
   const user=await currentUser();
   if(user){
@@ -181,15 +228,18 @@ async function loadCloudWorkouts(){
   const user=await currentUser();if(!user)return;
   const {data,error}=await authClient.from('workout_logs').select('workout_name,category,sets,reps,duration_minutes,completed_at').eq('user_id',user.id).order('completed_at',{ascending:false}).limit(30);
   if(error){console.error('Workout history load:',error.message);return;}
-  if(data){workoutEntries=data;localStorage.setItem('af_workouts',JSON.stringify(workoutEntries));renderWorkoutHistory();}
+  if(data){const merged=[...workoutEntries,...data];const seen=new Set();workoutEntries=merged.filter(x=>{const k=[x.workout_name,x.category,x.completed_at,x.duration_minutes].join('|');if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>new Date(b.completed_at||b.date||0)-new Date(a.completed_at||a.date||0)).slice(0,100);localStorage.setItem('af_workouts',JSON.stringify(workoutEntries));renderWorkoutHistory();updateWeeklySummary();}
 }
 
-let hindi=false;
-$('langBtn').addEventListener('click',()=>{hindi=!hindi;document.documentElement.lang=hindi?'hi':'en';$('langBtn').textContent=hindi?'English':'हिन्दी';document.querySelectorAll('[data-en][data-hi]').forEach(el=>{el.innerHTML=hindi?el.dataset.hi:el.dataset.en})});
+let hindi=localStorage.getItem('af_language')==='hi';
+function applyLanguage(){document.documentElement.lang=hindi?'hi':'en';$('langBtn').textContent=hindi?'English':'हिन्दी';document.querySelectorAll('[data-en][data-hi]').forEach(el=>{el.innerHTML=hindi?el.dataset.hi:el.dataset.en})}
+$('langBtn').addEventListener('click',()=>{hindi=!hindi;localStorage.setItem('af_language',hindi?'hi':'en');applyLanguage()});
+applyLanguage();
 
 // A FITNESS email login/signup using Supabase Auth.
 const SUPABASE_URL = "https://qsnrhtqsiafswdonkvcq.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_RHJR4-HmQhkDhAH5OSyu5g_aZXTSj_-";
+if (!window.supabase) { toast('Login service could not load. Please refresh and try again.'); throw new Error('Supabase client library failed to load.'); }
 const authClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 const authOverlay = $("authOverlay");
 const authMessage = $("authMessage");
@@ -210,7 +260,7 @@ $("authSignupBtn").addEventListener("click", async () => {
   const { error } = await authClient.auth.signUp({
     email,
     password,
-    options: { data: { full_name: fullName } }
+    options: { data: { full_name: fullName }, emailRedirectTo: window.location.origin + window.location.pathname }
   });
   showAuthMessage(error ? error.message : "Sign-up request successful. You may need to confirm your email. Please check your inbox.");
 });
@@ -221,6 +271,13 @@ $("authLoginBtn").addEventListener("click", async () => {
   showAuthMessage("Logging in...");
   const { error } = await authClient.auth.signInWithPassword({ email, password });
   showAuthMessage(error ? error.message : "Login successful!");
+});
+$("forgotPasswordBtn").addEventListener("click", async () => {
+  const email = $("authEmail").value.trim();
+  if (!email) { showAuthMessage("Enter your email address first, then choose Forgot password."); return; }
+  showAuthMessage("Sending password reset email...");
+  const { error } = await authClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + window.location.pathname });
+  showAuthMessage(error ? error.message : "Password reset email sent. Check your inbox.");
 });
 $("authLogoutBtn").addEventListener("click", async () => {
   const { error } = await authClient.auth.signOut();
